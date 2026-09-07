@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<title>Smart Irrigation Engineering Dashboard</title>
+<style>
+:root{--bg:#06101c;--panel:#0c1928;--panel2:#101f31;--line:#20364d;--text:#edf7ff;--muted:#8299b0;--green:#35e69a;--blue:#54b9ff;--yellow:#ffd166;--red:#ff5f73;--shadow:0 22px 60px rgba(0,0,0,.3)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 10% 0,#12324c 0,#07111f 35%,#040a12 100%);color:var(--text)}
+button,input{font:inherit}.hidden{display:none!important}
+.login{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 30%,#153b56,#050b13 60%);display:grid;place-items:center;padding:20px}.login-card{width:min(430px,100%);padding:34px;border:1px solid var(--line);border-radius:28px;background:rgba(10,24,39,.94);box-shadow:0 30px 100px rgba(0,0,0,.55);text-align:center}.lock{width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#35e69a,#3faeff);display:grid;place-items:center;margin:0 auto 20px;font-size:30px}.login h1{font-size:24px;margin:0 0 7px}.login p{color:var(--muted);font-size:13px;margin:0 0 24px}.login-input{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#071421;color:white;outline:0;text-align:center;letter-spacing:4px}.login-input:focus{border-color:var(--blue)}.login-btn{width:100%;margin-top:12px;border:0;border-radius:14px;padding:14px;background:linear-gradient(135deg,var(--green),var(--blue));font-weight:850;color:#031018;cursor:pointer}.error{color:var(--red);font-size:12px;min-height:18px;margin-top:10px}
+.app{max-width:1500px;margin:auto;padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:13px}.logo{width:52px;height:52px;border-radius:17px;background:linear-gradient(135deg,var(--green),var(--blue));display:grid;place-items:center;font-size:26px;box-shadow:0 12px 35px rgba(53,230,154,.16)}h1{font-size:21px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:4px}.top-actions{display:flex;gap:9px;align-items:center}.status{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#091522;padding:10px 13px;border-radius:999px;font-size:12px}.dot{width:9px;height:9px;border-radius:50%;background:var(--red)}.dot.online{background:var(--green);box-shadow:0 0 13px var(--green)}
+.icon-btn{border:1px solid var(--line);background:#0b1928;color:var(--text);width:40px;height:40px;border-radius:12px;cursor:pointer}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:linear-gradient(145deg,rgba(15,31,49,.97),rgba(8,19,32,.97));border:1px solid var(--line);border-radius:21px;padding:19px;box-shadow:var(--shadow)}.metric{min-height:142px}.label{font-size:11px;color:var(--muted);letter-spacing:.7px}.value{font-size:32px;font-weight:800;margin:15px 0 4px}.unit{font-size:14px;color:var(--muted);font-weight:500}.small{font-size:11px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:1.45fr .85fr;gap:15px;margin-top:15px}.title{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.title h2{font-size:16px;margin:0}.badge{font-size:10px;padding:6px 9px;border-radius:999px;background:#13263a;color:var(--muted);letter-spacing:.4px}
+.moisture{display:flex;align-items:center;gap:28px}.gauge{--p:0;width:190px;height:190px;border-radius:50%;background:conic-gradient(var(--green) calc(var(--p)*1%),#172e44 0);display:grid;place-items:center;position:relative;flex:none}.gauge:after{content:"";position:absolute;width:145px;height:145px;background:#091624;border-radius:50%}.gauge-content{z-index:1;text-align:center}.gauge-number{font-size:35px;font-weight:850}.gauge-label{font-size:10px;color:var(--muted);letter-spacing:1px}.soil-state{font-size:27px;font-weight:800}.bar{height:9px;background:#162a3e;border-radius:20px;overflow:hidden;margin:18px 0}.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--yellow),var(--green));transition:.5s}.legend{display:flex;justify-content:space-between;color:var(--muted);font-size:10px}
+.mode-panel{display:grid;gap:12px}.mode-option{border:1px solid var(--line);border-radius:17px;padding:16px;background:#081522;cursor:pointer;transition:.2s}.mode-option.active{border-color:var(--green);box-shadow:0 0 0 1px rgba(53,230,154,.12),0 10px 30px rgba(53,230,154,.08)}.mode-top{display:flex;justify-content:space-between;align-items:center}.mode-name{font-weight:750}.mode-icon{font-size:22px}.mode-description{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.45}.radio{width:15px;height:15px;border:2px solid #536b82;border-radius:50%}.active .radio{border-color:var(--green);background:radial-gradient(circle,var(--green) 0 45%,transparent 48%)}
+.pump{margin-top:15px;display:flex;align-items:center;justify-content:space-between;gap:15px}.pump-left{display:flex;align-items:center;gap:13px}.pump-icon{width:53px;height:53px;border-radius:16px;background:#12283c;display:grid;place-items:center;font-size:25px}.pump-icon.running{background:rgba(53,230,154,.12);box-shadow:0 0 25px rgba(53,230,154,.12)}.pump-name{font-weight:800;font-size:18px}.primary{border:0;border-radius:13px;padding:12px 17px;background:linear-gradient(135deg,var(--green),var(--blue));font-weight:850;color:#031018;cursor:pointer}.primary:disabled{opacity:.45;cursor:not-allowed}.secondary{border:1px solid var(--line);border-radius:12px;padding:11px 14px;background:#0d1d2e;color:var(--text);cursor:pointer}
+.chart-card{margin-top:15px}.chart{height:235px;border-radius:15px;background:#081522;overflow:hidden;position:relative}.chart canvas{width:100%;height:100%}.empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:12px;pointer-events:none}
+.settings{margin-top:15px}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.setting-box{padding:16px;border:1px solid var(--line);background:#091624;border-radius:16px}.setting-box h3{font-size:13px;margin:0 0 12px}.form-row{display:flex;gap:9px}.input{width:100%;background:#071421;border:1px solid var(--line);color:white;padding:11px 12px;border-radius:11px;outline:0}.input:focus{border-color:var(--blue)}.setting-help{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5}
+.about-description{font-size:12px;line-height:1.7;color:var(--muted);margin:0 0 16px}.about-description strong{color:var(--text)}.about-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.about-item{padding:15px;border:1px solid var(--line);background:#091624;border-radius:16px}.about-item .small{margin-bottom:6px}.about-value{font-size:13px;font-weight:750;line-height:1.45}.about-link{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--blue);text-decoration:none}.about-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#101f31;border:1px solid var(--line);flex:none}.about-icon svg{width:18px;height:18px;fill:currentColor}.about-links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}@media(max-width:900px){.about-grid{grid-template-columns:repeat(2,1fr)}.about-links{grid-template-columns:1fr 1fr}}@media(max-width:650px){.about-grid,.about-links{grid-template-columns:1fr}}
+.footer{text-align:center;color:#5f768c;font-size:10px;padding:22px}
+.toast{position:fixed;right:20px;bottom:20px;padding:12px 15px;border:1px solid var(--line);background:#0c1b2a;border-radius:13px;color:white;font-size:12px;opacity:0;transform:translateY(10px);transition:.25s;z-index:150}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1050px){.cards{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
+@media(max-width:650px){.app{padding:13px}.top{align-items:flex-start}.top-actions{flex-wrap:wrap;justify-content:flex-end}.cards{grid-template-columns:1fr 1fr;gap:9px}.card{padding:15px;border-radius:17px}.value{font-size:25px}.moisture{flex-direction:column}.gauge{width:165px;height:165px}.gauge:after{width:125px;height:125px}.pump{align-items:flex-start;flex-direction:column}.settings-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login">
+  <div class="login-card">
+    <div class="lock">🔐</div>
+    <h1>Smart Irrigation</h1>
+    <p>Authorized engineering access required</p>
+    <input id="username" class="login-input" type="text" placeholder="USERNAME" autocomplete="username" style="letter-spacing:1px;margin-bottom:10px"><input id="password" class="login-input" type="password" placeholder="PASSWORD" autocomplete="current-password">
+    <button class="login-btn" onclick="login()">ACCESS DASHBOARD</button>
+    <div id="loginError" class="error"></div>
+  </div>
+</div>
+
+<div id="dashboard" class="hidden">
+<div class="app">
+<header class="top">
+  <div class="brand">
+    <div class="logo">🌱</div>
+    <div><h1>Smart Irrigation Control Center</h1><div class="sub">Professional IoT Monitoring & Control • ESP8266 + Blynk</div></div>
+  </div>
+  <div class="top-actions">
+    <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Offline</span></div>
+    <button class="icon-btn" title="Settings" onclick="scrollToSettings()">⚙</button>
+    <button class="icon-btn" title="Lock dashboard" onclick="logout()">🔒</button>
+  </div>
+</header>
+
+<section class="cards">
+  <div class="card metric"><div class="label">SOIL MOISTURE</div><div class="value" id="soilValue">--<span class="unit"> %</span></div><div class="small" id="soilMini">Waiting for data</div></div>
+  <div class="card metric"><div class="label">TEMPERATURE</div><div class="value" id="tempValue">--<span class="unit"> °C</span></div><div class="small">DHT11 environmental sensor</div></div>
+  <div class="card metric"><div class="label">AIR HUMIDITY</div><div class="value" id="humValue">--<span class="unit"> %</span></div><div class="small">DHT11 environmental sensor</div></div>
+  <div class="card metric"><div class="label">PUMP RUNTIME</div><div class="value" id="runtimeValue">--<span class="unit"> min</span></div><div class="small" id="modeMini">Mode: --</div></div>
+</section>
+
+<div class="layout">
+  <section class="card">
+    <div class="title"><h2>Soil condition</h2><span class="badge" id="soilBadge">NO DATA</span></div>
+    <div class="moisture">
+      <div class="gauge" id="gauge"><div class="gauge-content"><div class="gauge-number" id="gaugeNumber">--%</div><div class="gauge-label">MOISTURE</div></div></div>
+      <div style="flex:1;width:100%">
+        <div class="soil-state" id="bigSoilState">Waiting</div>
+        <div class="small">Automatic irrigation thresholds</div>
+        <div class="bar"><span id="moistureBar"></span></div>
+        <div class="legend"><span>0% Dry</span><span>30% ON</span><span>45% OFF</span><span>100% Wet</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="title"><h2>Operating mode</h2><span class="badge" id="modeBadge">OFFLINE</span></div>
+    <div class="mode-panel">
+      <div id="autoOption" class="mode-option active" onclick="selectMode(1)">
+        <div class="mode-top"><div><span class="mode-icon">🤖</span> <span class="mode-name">AUTO MODE</span></div><span class="radio"></span></div>
+        <div class="mode-description">ESP8266 automatically starts the pump when soil reaches 30% or below and stops it at 45% or above.</div>
+      </div>
+      <div id="manualOption" class="mode-option" onclick="selectMode(0)">
+        <div class="mode-top"><div><span class="mode-icon">🎛️</span> <span class="mode-name">MANUAL MODE</span></div><span class="radio"></span></div>
+        <div class="mode-description">Operator controls the pump directly from this dashboard.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="card pump">
+  <div class="pump-left"><div id="pumpIcon" class="pump-icon">💧</div><div><div class="pump-name">Water Pump: <span id="pumpText">OFF</span></div><div class="small" id="pumpNote">Connect to Blynk to control the pump</div></div></div>
+  <button id="pumpButton" class="primary" onclick="togglePump()" disabled>TURN ON</button>
+</section>
+
+<section class="card chart-card">
+  <div class="title"><h2>Live soil moisture history</h2><span class="badge">LAST 30 READINGS</span></div>
+  <div class="chart"><canvas id="chart"></canvas><div id="chartEmpty" class="empty">Connect to Blynk to display live history</div></div>
+</section>
+
+<section id="settings" class="card settings">
+  <div class="title"><h2>System settings</h2><span class="badge">ENGINEERING CONFIGURATION</span></div>
+  <div class="settings-grid">
+    <div class="setting-box">
+      <h3>☁ Blynk Cloud</h3>
+      <div class="form-row"><input id="token" class="input" type="password" value="CEk2Mi5kdzI98iE2Ja5xrWRF0c_1bexV" placeholder="Device Auth Token"><input id="server" class="input" value="https://blynk.cloud" placeholder="Blynk server"></div>
+      <div style="margin-top:10px"><button class="primary" onclick="connectBlynk()">CONNECT DEVICE</button></div>
+      <div class="setting-help">The dashboard uses Blynk Cloud REST API. A default device token is preloaded for quick connection; you can replace it in Settings and is not sent anywhere except the configured Blynk server.</div>
+    </div>
+    <div class="setting-box">
+      <h3>🔧 Irrigation thresholds</h3>
+      <div class="form-row"><input id="drySetting" class="input" type="number" min="0" max="100" value="30" placeholder="Dry %"><input id="wetSetting" class="input" type="number" min="0" max="100" value="45" placeholder="Wet %"></div>
+      <div style="margin-top:10px"><button class="secondary" onclick="saveThresholds()">SAVE LOCAL SETTINGS</button></div>
+      <div class="setting-help">These display settings document your operating thresholds. The actual pump thresholds remain in the ESP8266 firmware and should match these values.</div>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:15px">
+  <div class="title"><h2>About the Project</h2><span class="badge">SMART AGRICULTURE</span></div>
+  <p class="about-description"><strong>Smart Irrigation Control Center</strong> is an IoT-based irrigation system designed to monitor soil and environmental conditions and intelligently control a water pump. An ESP8266 reads the soil-moisture sensor and DHT11 temperature/humidity sensor, while the local relay, LEDs and LCD provide immediate physical feedback. Blynk Cloud connects the controller to this professional dashboard for remote monitoring and control. In <strong>AUTO mode</strong>, irrigation is controlled from the configured soil thresholds; in <strong>MANUAL mode</strong>, an authorized operator can control the pump from the dashboard.</p>
+  <div class="about-grid">
+    <div class="about-item"><div class="small">Controller</div><div class="about-value">ESP8266 NodeMCU</div></div>
+    <div class="about-item"><div class="small">Sensors</div><div class="about-value">Soil Moisture + DHT11</div></div>
+    <div class="about-item"><div class="small">Connectivity</div><div class="about-value">Wi‑Fi + Blynk Cloud</div></div>
+    <div class="about-item"><div class="small">Control</div><div class="about-value">AUTO / MANUAL</div></div>
+  </div>
+  <div class="about-links">
+    <a class="about-item about-link" href="https://github.com/uwaberanoelline1-bot" target="_blank" rel="noopener noreferrer"><span><div class="small">Developer</div><div class="about-value">UWABERA Noelline</div></span><span class="about-icon" title="Open GitHub profile"><svg viewBox="0 0 24 24"><path d="M12 .5A11.5 11.5 0 0 0 8.36 22.91c.58.11.79-.25.79-.56v-2.17c-3.22.7-3.9-1.37-3.9-1.37-.53-1.35-1.3-1.71-1.3-1.71-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.57-.29-5.28-1.29-5.28-5.74 0-1.27.45-2.31 1.19-3.12-.12-.29-.52-1.48.11-3.08 0 0 .97-.31 3.17 1.19a11 11 0 0 1 5.77 0c2.2-1.5 3.17-1.19 3.17-1.19.63 1.6.23 2.79.11 3.08.74.81 1.19 1.85 1.19 3.12 0 4.46-2.72 5.45-5.3 5.74.42.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg></span></a>
+    <a class="about-item about-link" href="mailto:uwaberanoelline1@gmail.com"><span><div class="small">Email</div><div class="about-value">uwaberanoelline1@gmail.com</div></span><span class="about-icon" title="Send email">✉</span></a>
+    <a class="about-item about-link" href="https://wa.me/250783334633" target="_blank" rel="noopener noreferrer"><span><div class="small">Phone / WhatsApp</div><div class="about-value">+250 783 334 633</div></span><span class="about-icon" title="Open WhatsApp">☏</span></a>
+  </div>
+</section>
+<div class="footer">SMART IRRIGATION • Engineering Control Interface • Protected Dashboard • © 2026 UWABERA Noelline</div>
+</div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+const USERNAME="admin"; const PASSWORD="N123";
+const PINS={soil:"V0",temp:"V1",hum:"V2",pump:"V3",mode:"V4",manual:"V5",soilStatus:"V6",runtime:"V7",system:"V8"};
+const DEFAULT_TOKEN="CEk2Mi5kdzI98iE2Ja5xrWRF0c_1bexV";
+let token=DEFAULT_TOKEN,base="https://blynk.cloud",connected=false,timer=null,history=[];
+let dryLevel=30,wetLevel=45;
+
+function $(id){return document.getElementById(id)}
+function login(){
+  const username=$("username").value.trim();
+  const password=$("password").value;
+  if(username===USERNAME && password===PASSWORD){
+    sessionStorage.setItem("irrigation_access","1");
+    $("loginScreen").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    showToast("Dashboard access granted");
+  }else{
+    $("loginError").textContent="Access denied — invalid username or password";
+    $("password").value="";
+    $("password").focus();
+  }
+}
+$("username").addEventListener("keydown",e=>{if(e.key==="Enter")$("password").focus()});
+$("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
+if(sessionStorage.getItem("irrigation_access")==="1"){$("loginScreen").classList.add("hidden");$("dashboard").classList.remove("hidden")}
+
+function showToast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2400)}
+function scrollToSettings(){$("settings").scrollIntoView({behavior:"smooth"})}
+function setStatus(ok,text){connected=ok;$("statusDot").classList.toggle("online",ok);$("statusText").textContent=text;$("modeBadge").textContent=ok?"ONLINE":"OFFLINE";$("pumpButton").disabled=!ok}
+function apiBase(){return ($("server").value.trim()||"https://blynk.cloud").replace(/\/+$/,"")}
+async function getPin(pin){
+  const r=await fetch(`${base}/external/api/get?token=${encodeURIComponent(token)}&${pin}`);
+  if(!r.ok)throw Error("read");
+  const t=(await r.text()).trim();
+  try{const j=JSON.parse(t);return Array.isArray(j)?j[0]:j}catch{return t.replace(/^"|"$/g,"")}
+}
+async function setPin(pin,value){
+  const r=await fetch(`${base}/external/api/update?token=${encodeURIComponent(token)}&${pin}=${encodeURIComponent(value)}`);
+  if(!r.ok)throw Error("write");
+}
+function n(v){let x=parseFloat(v);return Number.isFinite(x)?x:null}
+function updateModeUI(mode){
+  const auto=String(mode)==="1";
+  $("autoOption").classList.toggle("active",auto);$("manualOption").classList.toggle("active",!auto);
+  $("modeMini").textContent="Mode: "+(auto?"AUTO":"MANUAL");
+}
+function updatePumpUI(p){
+  const on=String(p)==="1"||String(p).toLowerCase()==="on";
+  $("pumpText").textContent=on?"ON":"OFF";$("pumpIcon").classList.toggle("running",on);
+  $("pumpButton").textContent=on?"TURN OFF":"TURN ON";
+  $("pumpNote").textContent=on?(document.getElementById("manualOption").classList.contains("active")?"Pump running under manual control":"Pump running under automatic control"):"Pump stopped";
+}
+function updateUI(d){
+  if(d.soil!==null){
+    const m=Math.max(0,Math.min(100,Math.round(d.soil)));
+    $("soilValue").innerHTML=m+'<span class="unit"> %</span>';$("gaugeNumber").textContent=m+"%";$("gauge").style.setProperty("--p",m);$("moistureBar").style.width=m+"%";
+    const state=m<=dryLevel?"DRY":m<wetLevel?"MEDIUM":"WET / NORMAL";
+    $("soilMini").textContent=state;$("bigSoilState").textContent=state;$("soilBadge").textContent=state;history.push(m);if(history.length>30)history.shift();drawChart()
+  }
+  if(d.temp!==null)$("tempValue").innerHTML=d.temp.toFixed(1)+'<span class="unit"> °C</span>';
+  if(d.hum!==null)$("humValue").innerHTML=Math.round(d.hum)+'<span class="unit"> %</span>';
+  if(d.runtime!==null)$("runtimeValue").innerHTML=(d.runtime/60).toFixed(1)+'<span class="unit"> min</span>';
+  if(d.mode!==null)updateModeUI(d.mode);
+  if(d.pump!==null)updatePumpUI(d.pump);
+  $("chartEmpty").style.display=history.length?"none":"grid";
+}
+async function poll(){
+  if(!connected)return;
+  try{
+    const [soil,temp,hum,pump,mode,runtime]=await Promise.all([getPin(PINS.soil),getPin(PINS.temp),getPin(PINS.hum),getPin(PINS.pump),getPin(PINS.mode),getPin(PINS.runtime)]);
+    updateUI({soil:n(soil),temp:n(temp),hum:n(hum),pump,mode,runtime:n(runtime)||0});
+  }catch(e){setStatus(false,"Connection error");if(timer)clearInterval(timer);timer=null}
+}
+async function connectBlynk(){
+  token=$("token").value.trim()||DEFAULT_TOKEN;base=apiBase();
+  if(!token){showToast("Enter the Blynk device auth token");return}
+  setStatus(false,"Connecting...");
+  try{
+    await getPin(PINS.soil);setStatus(true,"Blynk connected");showToast("Blynk device connected");await poll();
+    if(timer)clearInterval(timer);timer=setInterval(poll,3000);
+  }catch(e){setStatus(false,"Connection failed");showToast("Connection failed — check token and datastreams")}
+}
+async function selectMode(value){
+  if(!connected){showToast("Connect to Blynk first");return}
+  try{
+    await setPin(PINS.mode,value);
+    updateModeUI(value);
+    if(value===1)await poll();
+    else await poll();
+    showToast(value===1?"AUTO mode enabled":"MANUAL mode enabled");
+  }catch(e){showToast("Could not change operating mode")}
+}
+async function togglePump(){
+  if(!connected)return;
+  const manualActive=$("manualOption").classList.contains("active");
+  if(!manualActive){showToast("Switch to MANUAL mode to control the pump");return}
+  const current=$("pumpText").textContent==="ON";
+  try{await setPin(PINS.manual,current?0:1);await poll();showToast(current?"Pump stopped":"Pump started")}catch(e){showToast("Pump command failed")}
+}
+function saveThresholds(){
+  const d=n($("drySetting").value),w=n($("wetSetting").value);
+  if(d===null||w===null||d>=w||d<0||w>100){showToast("Invalid thresholds");return}
+  dryLevel=d;wetLevel=w;localStorage.setItem("dryLevel",d);localStorage.setItem("wetLevel",w);showToast("Threshold display settings saved")
+}
+dryLevel=n(localStorage.getItem("dryLevel"))??30;wetLevel=n(localStorage.getItem("wetLevel"))??45;$("drySetting").value=dryLevel;$("wetSetting").value=wetLevel;
+function drawChart(){
+  const c=$("chart"),r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=r.width*d;c.height=r.height*d;
+  const x=c.getContext("2d");x.scale(d,d);const w=r.width,h=r.height;x.clearRect(0,0,w,h);
+  x.strokeStyle="rgba(130,153,176,.13)";x.lineWidth=1;
+  for(let i=0;i<=4;i++){let y=15+(h-30)*i/4;x.beginPath();x.moveTo(0,y);x.lineTo(w,y);x.stroke()}
+  if(history.length<2)return;
+  x.strokeStyle="#35e69a";x.lineWidth=3;x.lineJoin="round";x.lineCap="round";x.beginPath();
+  history.forEach((v,i)=>{let px=12+i*(w-24)/(history.length-1),py=h-15-(v/100)*(h-30);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()
+}
+window.addEventListener("resize",drawChart);setStatus(false,"Offline");drawChart();
+</script>
+</body>
+</html>

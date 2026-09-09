@@ -159,6 +159,18 @@ function login(){
     $("password").focus();
   }
 }
+function logout(){
+  sessionStorage.removeItem("irrigation_access");
+  $("dashboard").classList.add("hidden");
+  $("loginScreen").classList.remove("hidden");
+  $("username").value="";
+  $("password").value="";
+  $("loginError").textContent="";
+  setStatus(false,"Offline");
+  showToast("Dashboard locked");
+  $("username").focus();
+}
+
 $("username").addEventListener("keydown",e=>{if(e.key==="Enter")$("password").focus()});
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
 if(sessionStorage.getItem("irrigation_access")==="1"){$("loginScreen").classList.add("hidden");$("dashboard").classList.remove("hidden")}
